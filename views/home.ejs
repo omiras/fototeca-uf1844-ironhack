@@ -15,11 +15,20 @@
                 <li><strong>FOTOTECA </strong></li>
             </ul>
             <ul>
-                <li><a href="#">Mostrar Imágenes</a></li>
-                <li><a href="#">Añadir Imagen</a></li>
+                <li><a href="/">Mostrar Imágenes</a></li>
+                <li><a href="/add-image-form">Añadir Imagen</a></li>
             </ul>
         </nav>
     </header>
+    <main class="container">
+        <section class="grid">
+            <% for (const image of images) { %>
+                <article>
+                    <%= image.title %>
+                </article>
+                <% } %>
+        </section>
+    </main>
 </body>
 
 </html>
