@@ -3,7 +3,10 @@
 
 <head>
     <title>Add New Image</title>
-    <%- include('./partials/head.ejs') %>
+    <script defer src="form.js"></script>
+
+    <%- include('./partials/head') %>
+
 </head>
 
 <body>
@@ -17,8 +20,9 @@
     </form>
     <!-- Mostrar un mensaje de confirmación si el usuario acaba de isertar una imagen en la 'base de datos'-->
     <% if (isImagePosted) { %>
-        <div class="container alert sucess">Imagen insertada correctamente</div>
+        <div id="message" class="container alert success">Imagen insertada correctamente</div>
         <% } %>
+
 </body>
 
 </html>

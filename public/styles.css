@@ -4,6 +4,7 @@
     opacity: 1;
     transition: opacity 0.6s;
     margin-bottom: 15px;
+    cursor: pointer;
 }
 
 .alert.success {
