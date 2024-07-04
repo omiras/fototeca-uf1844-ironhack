@@ -6,26 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Image</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
     <header class="container">
-        <nav>
-            <ul>
-                <li><strong>FOTOTECA </strong></li>
-            </ul>
-            <ul>
-                <li><a href="/">Mostrar Imágenes</a></li>
-                <li><a href="/add-image-form">Añadir Imagen</a></li>
-            </ul>
-        </nav>
+        <%- include('./partials/nav') %>
     </header>
     <form class="container" action="/add-image-form" method="post">
         <label for="title">Nombre</label>
         <input type="text" name="title" id="title" required>
         <input type="submit" value="Añadir">
     </form>
+    <!-- Mostrar un mensaje de confirmación si el usuario acaba de isertar una imagen en la 'base de datos'-->
+    <% if (isImagePosted) { %>
+        <div class="container alert sucess">Imagen insertada correctamente</div>
+        <% } %>
 </body>
 
 </html>
