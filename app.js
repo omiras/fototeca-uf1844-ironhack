@@ -41,8 +41,15 @@ app.post('/add-image-form', (req, res) => {
     // todos los datos vienen en req.body
     console.log(req.body);
 
+
     // 1. Actualizar el array 'images' con la información de req.body
     const { title, url } = req.body;
+
+    // Validación del lado servidor de que realmente nos han enviado un títilo
+    // Esto NO ES necesario para la práctica
+    if (!title || title.length > 30) {
+        return res.status(400).send('Algo ha salido mal...');
+    }
 
     // opción 1: totalmente válida
     //images.push(req.body); // [{title: 'Gato'}]
@@ -64,7 +71,7 @@ app.post('/add-image-form', (req, res) => {
         isImagePosted: true
     });
 
-    
+
 });
 
 
