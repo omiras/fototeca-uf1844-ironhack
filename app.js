@@ -42,14 +42,15 @@ app.post('/add-image-form', (req, res) => {
     console.log(req.body);
 
     // 1. Actualizar el array 'images' con la información de req.body
-    const { title } = req.body;
+    const { title, url } = req.body;
 
     // opción 1: totalmente válida
     //images.push(req.body); // [{title: 'Gato'}]
 
     // otra opción, 'sacar' los campos
     images.push({
-        title
+        title,
+        url
     })
 
     console.log('array de imagenes actualizado: ', images);
@@ -62,6 +63,8 @@ app.post('/add-image-form', (req, res) => {
     res.render('form', {
         isImagePosted: true
     });
+
+    
 });
 
 

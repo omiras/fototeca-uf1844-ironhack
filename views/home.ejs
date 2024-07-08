@@ -15,13 +15,17 @@
         <% if (images.length==0) { %>
             <p>Todavía no hay imágenes en la fototeca. <a href="/add-image-form">Añade una ahora.</a></p>
             <% } else { %>
+
                 <p>La fototeca tiene actualmente <%= images.length %> imágenes.</p>
                 <% } %>
 
                     <section class="grid">
                         <% for (const image of images) { %>
                             <article>
-                                <%= image.title %>
+                                <header>
+                                    <%= image.title %>
+                                </header>
+                                <div><img src="<%= image.url %>" alt=""></div>
                             </article>
                             <% } %>
                     </section>
