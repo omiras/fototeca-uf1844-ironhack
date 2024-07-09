@@ -18,6 +18,12 @@ const images = [{
 }, {
     title: "happy dog",
     url: "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+}, {
+    title: "cat snow",
+    url: "https://images.pexels.com/photos/3923387/pexels-photo-3923387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+}, {
+    title: "woman in lake",
+    url: "https://images.pexels.com/photos/2365067/pexels-photo-2365067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 }];
 
 // Especificar a Express que quiero usar EJS como motor de plantillas
