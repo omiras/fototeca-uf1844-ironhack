@@ -12,7 +12,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // Base de datos de imágenes
-const images = [];
+const images = [{
+    title: "happy cat",
+    url: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg"
+}, {
+    title: "happy dog",
+    url: "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+}];
 
 // Especificar a Express que quiero usar EJS como motor de plantillas
 app.set('view engine', 'ejs');
@@ -29,6 +35,27 @@ app.get('/', (req, res) => {
     });
 });
 
+// Creamos un nuevo endpoint para gestionar la búsqueda 
+app.get('/search', (req, res) => {
+    // Vamos a recibir algo con esta estructura http://localhost:3000/search?keyword=cat
+
+    // 1. Coger el el valor del parámetro keyword de la query string (cat)
+    // TODO 
+
+    // 2. Usar el método filter para filtrar el array de images por el valor de (cat)
+    const filteredImages = images.filter(); // TODO
+
+    // Tema mayúsuclas-minúsuclas: dos opciones
+    // 1. Pasarlo todo a mínusculas con toLowerCase
+    // 2. Usar una expresión regular
+
+    // 3. Usar res.render para renderizar la vista home.ejs y pasarle el array de imágenes filtrado
+    res.render('home', {
+        images: filteredImages
+    })
+
+});
+
 // Cuando nos hagan una petición GET a '/add-image-form' renderizamos 
 app.get('/add-image-form', (req, res) => {
     res.render('form', {
@@ -36,11 +63,12 @@ app.get('/add-image-form', (req, res) => {
     });
 });
 
+
+
 // Cuando nos hagan una petición POST a '/add-image-form' tenemos que recibir los datos del formulario y actualizar nuestra "base de datos"
-app.post('/add-image-form', (req, res) => {
+app.post('/add-image-form', async (req, res) => {
     // todos los datos vienen en req.body
     console.log(req.body);
-
 
     // 1. Actualizar el array 'images' con la información de req.body
     const { title, url } = req.body;
@@ -66,7 +94,10 @@ app.post('/add-image-form', (req, res) => {
 
     // 4julio: Tras insertar una imagen 'dejaremos' el formulario visible 
     //res.send('Datos recibidos');
-    // Redirect es un método del objecto Response que permite 'redirigir' al cliente a un nuevo endpoint o vista
+    // Redirect es un método del objecto Response que permite 'redirigir' al cliente a un nuevo endpoint o 
+
+    // TODO: SORT : Usar el sort de manera adecuada para ordenar las fotografías por fecha antes de responder al cliente
+
     res.render('form', {
         isImagePosted: true
     });
@@ -81,3 +112,4 @@ app.post('/add-image-form', (req, res) => {
 app.listen(3000, (req, res) => {
     console.log("Servidor escuchando correctamente en el puerto 3000.")
 });
+
