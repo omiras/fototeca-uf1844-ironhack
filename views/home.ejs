@@ -28,10 +28,24 @@
                                 </header>
 
                                 <div><img src="<%= image.url %>" alt="<%= image.title %>"></div>
+                                <form action="/images/<%= image.id %>/delete" method="post"
+                                    onsubmit="confirmDelete(event, '<%= image.title %>')">
+                                    <input class="button__delete" type="submit" value="Delete">
+                                </form>
                             </article>
                             <% } %>
                     </section>
     </main>
+    <script>
+        function confirmDelete(event, title) {
+            const mustDelete = confirm(`¿Seguro que quieres borrar la imagen ${title}?`);
+
+            // JavaScript lado cliente: si nos dice que NO quiere borrar la foto tenemos que parar el submit del form
+            if (!mustDelete) {
+                event.preventDefault();
+            }
+        }
+    </script>
 </body>
 
 </html>

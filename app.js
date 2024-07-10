@@ -11,17 +11,25 @@ app.use(express.urlencoded({ extended: true }));
 // Añadimos el middleware necesario para que el client puedo hacer peticiones GET a los recursos públicos de la carpeta 'public'
 app.use(express.static('public'));
 
+// Forma más simple. Variable global para saber cual es el siguiente Id que nos tocan
+let id = 5;
+
+
 // Base de datos de imágenes
-const images = [{
+let images = [{
+    id: 1,
     title: "happy cat",
-    url: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg"
+    url: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg",
 }, {
+    id: 2,
     title: "happy dog",
     url: "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 }, {
+    id: 3,
     title: "cat snow",
     url: "https://images.pexels.com/photos/3923387/pexels-photo-3923387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 }, {
+    id: 4,
     title: "woman in lake",
     url: "https://images.pexels.com/photos/2365067/pexels-photo-2365067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 }];
@@ -49,7 +57,7 @@ app.get('/search', (req, res) => {
     // TODO 
 
     // 2. Usar el método filter para filtrar el array de images por el valor de (cat)
-    const filteredImages = images.filter(); // TODO
+    const filteredImages = images.filter(() => true); // TODO
 
     // Tema mayúsuclas-minúsuclas: dos opciones
     // 1. Pasarlo todo a mínusculas con toLowerCase
@@ -77,7 +85,10 @@ app.post('/add-image-form', async (req, res) => {
     console.log(req.body);
 
     // 1. Actualizar el array 'images' con la información de req.body
-    const { title, url } = req.body;
+    const { id, title, url } = req.body;
+
+    // Incremento la varible id para el obtener el siguiente identificador único
+    id++;
 
     // Validación del lado servidor de que realmente nos han enviado un títilo
     // Esto NO ES necesario para la práctica
@@ -111,6 +122,22 @@ app.post('/add-image-form', async (req, res) => {
 
 });
 
+// endpoint para borrar la imagen
+app.post('/images/:url/delete', (req, res) => {
+    // 1. ¿Cómo vamos a obtener la url de la imagen que quiere borrar el cliente? req.params.url
+    console.log('req params: ', req.params);
+
+    // 2. images? Usar el método filter para eliminar la imagen que me pasan por req.params.url
+
+    // Opción 1: 3. Sobreescribir el array images con el resultado del método filter
+    images = images.filter(() => true); //TODO 
+
+    // Opctión 2: Usar el método de array splice para eliminar el elemento del array images. Antes teneis que identificar el índice donde se encuentra la imagen que queremos borrar
+
+    // 3. Volvemos a hacer un render
+    res.redirect('/')
+
+});
 
 // en el futuro es normal que tengamos endpoints como
 // app.get('/edit-image-form')
