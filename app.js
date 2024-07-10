@@ -98,13 +98,6 @@ app.post('/add-image-form', async (req, res) => {
 
     // Calcular color predominante
 
-    // otra opción, 'sacar' los campos
-    images.push({
-        id: id++,
-        title,
-        url,
-        dominantColor: ''
-    })
 
     console.log('array de imagenes actualizado: ', images);
 
@@ -116,9 +109,33 @@ app.post('/add-image-form', async (req, res) => {
 
     // TODO: SORT : Usar el sort de manera adecuada para ordenar las fotografías por fecha antes de responder al cliente
 
-    res.render('form', {
-        isImagePosted: true
-    });
+    // miramos si la URL está repetida en el array de images
+    const isRepeated = false; // TODO
+
+    if (isRepeated) {
+
+        res.render('form', {
+            isImagePosted: false,
+            isImageRepetad: true
+        });
+
+    } else {
+        // otra opción, 'sacar' los campos
+        images.push({
+            id: id++,
+            title,
+            url,
+            dominantColor: ''
+        })
+
+
+        res.render('form', {
+            isImagePosted: true,
+            isImageRepetad: false
+        });
+
+    }
+
 
 
 });
