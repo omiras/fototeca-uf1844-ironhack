@@ -85,10 +85,7 @@ app.post('/add-image-form', async (req, res) => {
     console.log(req.body);
 
     // 1. Actualizar el array 'images' con la información de req.body
-    const { id, title, url } = req.body;
-
-    // Incremento la varible id para el obtener el siguiente identificador único
-    id++;
+    const { title, url } = req.body;
 
     // Validación del lado servidor de que realmente nos han enviado un títilo
     // Esto NO ES necesario para la práctica
@@ -99,10 +96,14 @@ app.post('/add-image-form', async (req, res) => {
     // opción 1: totalmente válida
     //images.push(req.body); // [{title: 'Gato'}]
 
+    // Calcular color predominante
+
     // otra opción, 'sacar' los campos
     images.push({
+        id: id++,
         title,
-        url
+        url,
+        dominantColor: ''
     })
 
     console.log('array de imagenes actualizado: ', images);
