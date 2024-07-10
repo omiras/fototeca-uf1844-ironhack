@@ -123,11 +123,11 @@ app.post('/add-image-form', async (req, res) => {
 });
 
 // endpoint para borrar la imagen
-app.post('/images/:url/delete', (req, res) => {
-    // 1. ¿Cómo vamos a obtener la url de la imagen que quiere borrar el cliente? req.params.url
+app.post('/images/:id/delete', (req, res) => {
+    // 1. ¿Cómo vamos a obtener la url de la imagen que quiere borrar el cliente? req.params.id
     console.log('req params: ', req.params);
 
-    // 2. images? Usar el método filter para eliminar la imagen que me pasan por req.params.url
+    // 2. images? Usar el método filter para eliminar la imagen que me pasan por req.params.id
 
     // Opción 1: 3. Sobreescribir el array images con el resultado del método filter
     images = images.filter(() => true); //TODO 
