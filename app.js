@@ -160,7 +160,7 @@ app.post('/images/:id/delete', (req, res) => {
 // en el futuro es normal que tengamos endpoints como
 // app.get('/edit-image-form')
 
-app.listen(process.env.PORT || 3000, (req, res) => {
+app.listen(3000, (req, res) => {
     console.log("Servidor escuchando correctamente en el puerto 3000.")
 });
 
