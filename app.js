@@ -95,10 +95,14 @@ app.post('/add-image-form', async (req, res) => {
     const { title, url } = req.body;
 
     // Validación del lado servidor de que realmente nos han enviado un títilo
-    // Esto NO ES necesario para la práctica
-    if (!title || title.length > 30) {
+    // Expresión para validar el formato del title de la imagen
+    const regexp = /^[0-9A-Z\s_]+$/i;
+
+    /** Programación defensiva: no dar por supuesto nada de lo que te envia un cliente o de cómo usan tus funcionalidades */
+    if (title.length > 30 || !regexp.test(title) ) {
         return res.status(400).send('Algo ha salido mal...');
     }
+
 
     // opción 1: totalmente válida
     //images.push(req.body); // [{title: 'Gato'}]
