@@ -29,6 +29,12 @@
         <div id="message" class="container alert success">Imagen insertada correctamente</div>
         <% } %>
 
+            <% if (imageRepeated) { %>
+                <div id="message" class="container alert error">La URL que has intentado insertar está repetida: <%=
+                        imageRepeated %>
+                </div>
+                <% }%>
+
 
 </body>
 

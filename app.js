@@ -56,15 +56,28 @@ app.get('/', (req, res) => {
     });
 });
 
+/**
+ * 
+ * @param {string} s1 String principal. Cadena de texto donde vamos a realizar la búsqueda 
+ * @param {string} s2 String secundario.  
+ * @returns string Retorna true si s2 está contenido en s1. En caso contrario retorna false
+ */
+function isSubstring(s1, s2) {
+    const regexp = new RegExp(s2, "i");
+
+    // Busco en el string s1 si contiene el string s2
+    const result = regexp.test(s1);
+}
+
 // Creamos un nuevo endpoint para gestionar la búsqueda 
 app.get('/search', (req, res) => {
     // Vamos a recibir algo con esta estructura http://localhost:3000/search?keyword=cat
 
-    // 1. Coger el el valor del parámetro keyword de la query string (cat)
-    // TODO 
+    // 1. Coger el  valor del parámetro keyword de la query string (cat)
+    const keyword = req.query.keyword;
 
     // 2. Usar el método filter para filtrar el array de images por el valor de (cat)
-    const filteredImages = images.filter(() => true); // TODO
+    const filteredImages = images.filter((i) => isSubstring(i.title, keyword)); // TODO
 
     // Tema mayúsuclas-minúsuclas: dos opciones
     // 1. Pasarlo todo a mínusculas con toLowerCase
@@ -80,7 +93,9 @@ app.get('/search', (req, res) => {
 // Cuando nos hagan una petición GET a '/add-image-form' renderizamos 
 app.get('/add-image-form', (req, res) => {
     res.render('form', {
-        isImagePosted: undefined
+        isImagePosted: undefined,
+        imageRepeated: undefined
+
     });
 });
 
@@ -99,9 +114,13 @@ app.post('/add-image-form', async (req, res) => {
     const regexp = /^[0-9A-Z\s_]+$/i;
 
     /** Programación defensiva: no dar por supuesto nada de lo que te envia un cliente o de cómo usan tus funcionalidades */
-    if (title.length > 30 || !regexp.test(title) ) {
+    if (title.length > 30 || !regexp.test(title)) {
         return res.status(400).send('Algo ha salido mal...');
     }
+
+    /** Comprobar si la URL está repetida */
+    const isRepeated = images.some(i => i.url.toLocaleLowerCase() == url.toLocaleLowerCase());
+    console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
 
 
     // opción 1: totalmente válida
@@ -120,14 +139,12 @@ app.post('/add-image-form', async (req, res) => {
 
     // TODO: SORT : Usar el sort de manera adecuada para ordenar las fotografías por fecha antes de responder al cliente
 
-    // miramos si la URL está repetida en el array de images
-    const isRepeated = false; // TODO
 
     if (isRepeated) {
 
         res.render('form', {
             isImagePosted: false,
-            isImageRepetad: true
+            imageRepeated: url
         });
 
     } else {
@@ -142,7 +159,7 @@ app.post('/add-image-form', async (req, res) => {
 
         res.render('form', {
             isImagePosted: true,
-            isImageRepetad: false
+            imageRepeated: undefined
         });
 
     }
