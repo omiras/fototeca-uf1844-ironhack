@@ -1,6 +1,8 @@
 // importar módulos de terceros
 const express = require('express');
 const morgan = require('morgan');
+const { getColorFromURL } = require('color-thief-node');
+
 
 // creamos una instancia del servidor Express
 const app = express();
@@ -23,24 +25,7 @@ const PORT = process.env.PORT || 4000;
 
 
 // Base de datos de imágenes
-let images = [{
-    id: 1,
-    title: "happy cat",
-    url: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg",
-}, {
-    id: 2,
-    title: "happy dog",
-    url: "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-}, {
-    id: 3,
-    title: "cat snow",
-    url: "https://images.pexels.com/photos/3923387/pexels-photo-3923387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-}, {
-    id: 4,
-    title: "woman in lake",
-    url: "https://images.pexels.com/photos/2365067/pexels-photo-2365067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-}];
-
+let images = [];
 // Especificar a Express que quiero usar EJS como motor de plantillas
 app.set('view engine', 'ejs');
 
@@ -122,6 +107,10 @@ app.post('/add-image-form', async (req, res) => {
     const isRepeated = images.some(i => i.url.toLocaleLowerCase() == url.toLocaleLowerCase());
     console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
 
+    // Extraer el color predominante
+    const dominantColor = await getColorFromURL(url);
+    console.log("🚀 ~ file: app.js:129 ~ app.post ~ dominantColor:", dominantColor)
+
 
     // opción 1: totalmente válida
     //images.push(req.body); // [{title: 'Gato'}]
@@ -153,7 +142,7 @@ app.post('/add-image-form', async (req, res) => {
             id: id++,
             title,
             url,
-            dominantColor: ''
+            dominantColor
         })
 
 

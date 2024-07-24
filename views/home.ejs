@@ -32,6 +32,9 @@
                                     onsubmit="confirmDelete(event, '<%= image.title %>')">
                                     <input class="button__delete" type="submit" value="Delete">
                                 </form>
+                                <div style="background-color: rgb(<%= image.dominantColor %>) ">
+                                    Dominant color: <%= image.dominantColor %>
+                                </div>
                             </article>
                             <% } %>
                     </section>
@@ -47,7 +50,7 @@
             }
         }
     </script>
-    
+
 </body>
 
 </html>
