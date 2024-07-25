@@ -34,7 +34,6 @@ app.use(morgan('tiny'));
 
 // Cuando nos hagan una petición GET a '/' renderizamos la home.ejs
 app.get('/', (req, res) => {
-
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
     res.render('home', {
         images
@@ -87,29 +86,42 @@ app.get('/add-image-form', (req, res) => {
 
 
 // Cuando nos hagan una petición POST a '/add-image-form' tenemos que recibir los datos del formulario y actualizar nuestra "base de datos"
-app.post('/add-image-form', async (req, res) => {
+app.post('/add-image-form', async (req, res, next) => {
     // todos los datos vienen en req.body
-    console.log(req.body);
-
-    // 1. Actualizar el array 'images' con la información de req.body
+    let dominantColor;
+    let isRepeated;
     const { title, url } = req.body;
 
-    // Validación del lado servidor de que realmente nos han enviado un títilo
-    // Expresión para validar el formato del title de la imagen
-    const regexp = /^[0-9A-Z\s_]+$/i;
+    try {
 
-    /** Programación defensiva: no dar por supuesto nada de lo que te envia un cliente o de cómo usan tus funcionalidades */
-    if (title.length > 30 || !regexp.test(title)) {
-        return res.status(400).send('Algo ha salido mal...');
+        console.log(req.body);
+
+        // 1. Actualizar el array 'images' con la información de req.body
+
+        // Validación del lado servidor de que realmente nos han enviado un títilo
+        // Expresión para validar el formato del title de la imagen
+        const regexp = /^[0-9A-Z\s_]+$/i;
+
+        /** Programación defensiva: no dar por supuesto nada de lo que te envia un cliente o de cómo usan tus funcionalidades */
+        if (title.length > 30 || !regexp.test(title)) {
+            return res.status(400).send('Algo ha salido mal...');
+        }
+
+        /** Comprobar si la URL está repetida */
+        isRepeated = images.some(i => i.url.toLocaleLowerCase() == url.toLocaleLowerCase());
+        console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
+
+        // Extraer el color predominante
+        dominantColor = await getColorFromURL(url);
+    } catch (err) {
+        console.log('Ha ocurrido un error: ', err);
+        // Si ha fallado la app porque la biblioteca de terceros no ha podido extraer el color predominante informar de manera específica al usuario
+        if (err.message.includes('Unsupported image type')) {
+            return res.send(`No hemos podido obtener el color predominante de la imagen . Por favor, prueba otra URL diferente`);
+        }
+        // Redirigimos la respuesta que le damos al cliente a nuestro manejador de errores
+        return next(err);
     }
-
-    /** Comprobar si la URL está repetida */
-    const isRepeated = images.some(i => i.url.toLocaleLowerCase() == url.toLocaleLowerCase());
-    console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
-
-    // Extraer el color predominante
-    const dominantColor = await getColorFromURL(url);
-    console.log("🚀 ~ file: app.js:129 ~ app.post ~ dominantColor:", dominantColor)
 
 
     // opción 1: totalmente válida
@@ -176,6 +188,15 @@ app.post('/images/:id/delete', (req, res) => {
 
 // en el futuro es normal que tengamos endpoints como
 // app.get('/edit-image-form')
+
+/** Uso de middleware para gestionar cualquier error imprevisto de nuestra aplicaicón y fallar de forma grácil */
+app.use((err, req, res, next) => {
+    // err.message -> simplemente el mensaje
+    // err.stack -> la pila de llamadas
+    console.error(err)
+    // Enviar un correo electronico o cualquier otro medio a los desarrolladores para que se den cuenta de que algo ha 'petao'
+    res.status(500).send('<p>Ups! La operación ha fallado. Hemos informado a los desarrolladores. Vuelve a probarlo más tarde.Vuelve a la <a href="/">home page</a></p> ');
+})
 
 
 
