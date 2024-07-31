@@ -1,11 +1,25 @@
 // importar módulos de terceros
 const express = require('express');
 const morgan = require('morgan');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const { getColorFromURL } = require('color-thief-node');
 
 
 // creamos una instancia del servidor Express
 const app = express();
+
+const uri = "mongodb+srv://oscar:oscar@cluster0.c8tq0vp.mongodb.net/";
+
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+});
+
+// variable global para gestionar nuestra base de datos
+let database;
 
 // Tenemos que usar un nuevo middleware para indicar a Express que queremos procesar peticiones de tipo POST
 app.use(express.urlencoded({ extended: true }));
@@ -85,12 +99,12 @@ app.get('/add-image-form', (req, res) => {
 
 
 
-// Cuando nos hagan una petición POST a '/add-image-form' tenemos que recibir los datos del formulario y actualizar nuestra "base de datos"
+// Cuando nos hagan una petición POST a '/add-image-form' tenemos que recibir los datos del formulario y actualizar nuestra base de datos
 app.post('/add-image-form', async (req, res, next) => {
     // todos los datos vienen en req.body
     let dominantColor;
     let isRepeated;
-    const { title, url } = req.body;
+    const { title, date, url } = req.body;
 
     try {
 
@@ -150,13 +164,22 @@ app.post('/add-image-form', async (req, res, next) => {
 
     } else {
         // otra opción, 'sacar' los campos
-        images.push({
-            id: id++,
+        // images.push({
+        //     id: id++,
+        //     ...req.body
+        // })
+
+        /** TODO: insertar un nuevo documento en la colección 'images'
+         *  El ID NO hay que insetarlo, dejad lo cree la base de datos.
+         */
+
+        // database.images.insertOne...
+        database.collection('images').insertOne({
             title,
+            date: new Date(date),
             url,
             dominantColor
         })
-
 
         res.render('form', {
             isImagePosted: true,
@@ -200,7 +223,20 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(PORT, (req, res) => {
+app.listen(PORT, async (req, res) => {
     console.log("Servidor escuchando correctamente en el puerto " + PORT);
+
+    try {
+        await client.connect();
+
+        // seleccionamos la base de datos
+        database = client.db("ironhack");
+
+        // Mensaje de confirmación de que nos hemos conectado a la base de datos
+        console.log("Conexión a la base de datos OK.")
+
+    } catch (err) {
+        console.error(err);
+    }
 });
 
