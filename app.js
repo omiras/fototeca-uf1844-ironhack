@@ -36,10 +36,6 @@ let id = 5;
 console.log("valor del PORT: ", process.env.PORT)
 const PORT = process.env.PORT || 4000;
 
-
-
-// Base de datos de imágenes
-let images = [];
 // Especificar a Express que quiero usar EJS como motor de plantillas
 app.set('view engine', 'ejs');
 
@@ -47,8 +43,13 @@ app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
 
 // Cuando nos hagan una petición GET a '/' renderizamos la home.ejs
-app.get('/', (req, res) => {
-    // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
+app.get('/', async (req, res) => {
+    // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título
+
+    // TODO: Modificar este código para que ahora las imágenes que pasamos a la vista vengan todas de nuestra instancia de MongoDB (usar el find adecuadamente): 19:00h
+
+    const images = await database.collection('images').find().toArray();
+
     res.render('home', {
         images
     });
@@ -122,8 +123,14 @@ app.post('/add-image-form', async (req, res, next) => {
         }
 
         /** Comprobar si la URL está repetida */
-        isRepeated = images.some(i => i.url.toLocaleLowerCase() == url.toLocaleLowerCase());
-        console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
+        // Hacer un find a base de datos para comprobar si existe una imagen con la url que nos pasan parámetro
+        const image = await database.collection('images').findOne({
+            url: url
+        });
+
+        // Si no existe ninguna imagen con esa url, el findOne devuelve null
+        // Si image es diferente de nul podemos decir que la imagen está repetida
+        isRepeated = image != null;
 
         // Extraer el color predominante
         dominantColor = await getColorFromURL(url);
@@ -142,9 +149,6 @@ app.post('/add-image-form', async (req, res, next) => {
     //images.push(req.body); // [{title: 'Gato'}]
 
     // Calcular color predominante
-
-
-    console.log('array de imagenes actualizado: ', images);
 
     // 3. Añadir los otros campos del formulario y sus validaciones
 
@@ -173,7 +177,6 @@ app.post('/add-image-form', async (req, res, next) => {
          *  El ID NO hay que insetarlo, dejad lo cree la base de datos.
          */
 
-        // database.images.insertOne...
         database.collection('images').insertOne({
             title,
             date: new Date(date),
