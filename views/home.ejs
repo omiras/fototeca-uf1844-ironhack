@@ -26,6 +26,9 @@
                                 <header class="image__title">
                                     <%= image.title %>
                                 </header>
+                                <div>
+                                    <%= image.date.toLocaleString() %>
+                                </div>
 
                                 <div><img src="<%= image.url %>" alt="<%= image.title %>"></div>
                                 <form action="/images/<%= image.id %>/delete" method="post"

@@ -6,20 +6,54 @@ const mongoose = require('mongoose');
 // TODO: 1. Conectar a la base de datos utilizando mongoose 
 main().catch(err => console.log(err));
 
+// Variable global para almacenar el modelo
+let Image;
+
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/test');
+    await mongoose.connect('mongodb+srv://oscar:oscar@cluster0.c8tq0vp.mongodb.net/ironhackDB');
 
     // TODO 2: Crear el Schema que representa nuestras imagenes. 
     // - title , tipo string y de 30 carácteres como mucho
     // - url, de tipo string y validando contra expresión regular de URL
     // - date, de tipo Date 
-    // - predominantColor, de tipo Array/String
+    // - dominantColor, de tipo Array/String
     // - TODOS los campos/propiedades son requeridos
+    const imageSchema = new mongoose.Schema({
+        title: {
+            type: String,
+            required: true,
+            maxLength: 30,
+            trim: true, // quita los espacios en blanco al principio y final de string
+            match: /[0-9A-Za-z\s_]+/
+        },
+        date: {
+            type: Date,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true,
+            match: /^(https):\/\/[^\s/$.?#].[^\s]*$/i
+        },
+        dominantColor: {
+            type: [Number], // [12, 45, 255]
+            required: true,
+        }
+    });
 
     // TODO 3: Asociar el Schema al Model. Asociar el Schema a una colección de MongoDB. Llamaremos a la colección 'images'
+    Image = mongoose.model('Image', imageSchema);
 
     // TODO 4: Crea una imagen inmediatamente en este punto y comprueba que se ha creado en tu base de datos de MongoDB
     // new Image({})... image.save()
+    // const document = new Image({
+    //     title: "Gato",
+    //     date: new Date('2024-02-01'),
+    //     url: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    //     dominantColor: [200, 200, 200]
+    // });
+
+    // await document.save();
 
     // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
@@ -55,9 +89,14 @@ app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
 
 // Cuando nos hagan una petición GET a '/' renderizamos la home.ejs
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
+
+    // Iteración 3: Usar Image.find para recuperar todas las imágenes de la base de datos. Pasarla a la vista estas imágenes. Cuando lo consigáis, probad de modificar la consulta para ordenarlas por fecha decreciente . Corregir 20.50
+    const images = await Image.find().sort({ date: -1 });
+
     res.render('home', {
+        images
     });
 });
 
@@ -109,7 +148,7 @@ app.post('/add-image-form', async (req, res, next) => {
     // todos los datos vienen en req.body
     let dominantColor;
     let isRepeated;
-    const { title, url } = req.body;
+    const { title, date, url } = req.body;
 
     try {
 
@@ -157,6 +196,8 @@ app.post('/add-image-form', async (req, res, next) => {
 
     // TODO: SORT : Usar el sort de manera adecuada para ordenar las fotografías por fecha antes de responder al cliente
 
+    // Iteración 4: Buscar en la base datos si existe UN documento que tenga la misma URL que la imagen que queremos agergar. En tal caso --> isRepeated = true;
+    isRepeated = await Image.findOne({ url: url }) !== null;
 
     if (isRepeated) {
 
@@ -170,7 +211,16 @@ app.post('/add-image-form', async (req, res, next) => {
 
         // Iteración 2; Mongoose-> Recuperar la información del formulario y crear un nuevo documento Image y guardarlo en base de datos
 
+        // Corregir a las 19.50h -->
+        const document = new Image({
+            title,
+            date: new Date(date),
+            url,
+            dominantColor
+        });
 
+        // salvar el documento
+        await document.save();
 
         res.render('form', {
             isImagePosted: true,
