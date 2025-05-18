@@ -1,8 +1,7 @@
 // importar módulos de terceros
-const express = require('express');
-const morgan = require('morgan');
-const { getColorFromURL } = require('color-thief-node');
-
+import express from 'express';
+import morgan from 'morgan';
+import { Vibrant } from "node-vibrant/node";
 
 // creamos una instancia del servidor Express
 const app = express();
@@ -51,6 +50,7 @@ function isSubstring(s1, s2) {
 
     // Busco en el string s1 si contiene el string s2
     const result = regexp.test(s1);
+    return result;
 }
 
 // Creamos un nuevo endpoint para gestionar la búsqueda 
@@ -112,7 +112,9 @@ app.post('/add-image-form', async (req, res, next) => {
         console.log("🚀 ~ file: app.js:123 ~ app.post ~ isRepeated:", isRepeated)
 
         // Extraer el color predominante
-        dominantColor = await getColorFromURL(url);
+        const palette = await Vibrant.from(url).getPalette();
+        dominantColor = palette.Vibrant.hex;
+
     } catch (err) {
         console.log('Ha ocurrido un error: ', err);
         // Si ha fallado la app porque la biblioteca de terceros no ha podido extraer el color predominante informar de manera específica al usuario
