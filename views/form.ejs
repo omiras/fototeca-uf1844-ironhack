@@ -25,9 +25,7 @@
         <input type="submit" value="Añadir">
     </form>
     <!-- Mostrar un mensaje de confirmación o error unificado -->
-    <% if (message) { %>
-        <div id="message" class="container alert <%= messageType %>"><%= message %></div>
-    <% } %>
+    <%- include('./partials/message', { message, messageType }) %>
 
 
 </body>

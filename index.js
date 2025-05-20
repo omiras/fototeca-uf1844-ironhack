@@ -35,7 +35,9 @@ app.use(morgan('tiny'));
 app.get('/', (req, res) => {
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
     res.render('home', {
-        images
+        images,
+        message: undefined,
+        messageType: undefined
     });
 });
 
@@ -55,23 +57,18 @@ function isSubstring(s1, s2) {
 
 // Creamos un nuevo endpoint para gestionar la búsqueda 
 app.get('/search', (req, res) => {
-    // Vamos a recibir algo con esta estructura http://localhost:3000/search?keyword=cat
-
-    // 1. Coger el  valor del parámetro keyword de la query string (cat)
     const keyword = req.query.keyword;
-
-    // 2. Usar el método filter para filtrar el array de images por el valor de (cat)
-    const filteredImages = images.filter((i) => isSubstring(i.title, keyword)); // TODO
-
-    // Tema mayúsuclas-minúsuclas: dos opciones
-    // 1. Pasarlo todo a mínusculas con toLowerCase
-    // 2. Usar una expresión regular
-
-    // 3. Usar res.render para renderizar la vista home.ejs y pasarle el array de imágenes filtrado
+    const filteredImages = images.filter((i) => isSubstring(i.title, keyword));
+    let message, messageType;
+    if (keyword) {
+        message = `Mostrando resultados para: "${keyword}"`;
+        messageType = 'info';
+    }
     res.render('home', {
-        images: filteredImages
-    })
-
+        images: filteredImages,
+        message,
+        messageType
+    });
 });
 
 // Cuando nos hagan una petición GET a '/add-image-form' renderizamos 

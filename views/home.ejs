@@ -18,26 +18,26 @@
 
                 <p>La fototeca tiene actualmente <%= images.length %> imágenes.</p>
                 <% } %>
+        <%- include('./partials/message', { message, messageType }) %>
+        <section class="gallery">
+            <% for (const image of images) { %>
+                <article class="gallery__item">
 
-                    <section class="gallery">
-                        <% for (const image of images) { %>
-                            <article class="gallery__item">
+                    <header class="image__title">
+                        <%= image.title %>
+                    </header>
 
-                                <header class="image__title">
-                                    <%= image.title %>
-                                </header>
-
-                                <div><img src="<%= image.url %>" alt="<%= image.title %>"></div>
-                                <!-- <form action="/images/<%= image.id %>/delete" method="post"
+                    <div><img src="<%= image.url %>" alt="<%= image.title %>"></div>
+                    <!-- <form action="/images/<%= image.id %>/delete" method="post"
                                     onsubmit="confirmDelete(event, '<%= image.title %>')">
                                     <input class="button__delete" type="submit" value="Delete">
                                 </form> -->
-                                <div style="background-color: <%= image.dominantColor %> ">
-                                    Dominant color: <%= image.dominantColor %>
-                                </div>
-                            </article>
-                            <% } %>
-                    </section>
+                    <div style="background-color: <%= image.dominantColor %> ">
+                        Dominant color: <%= image.dominantColor %>
+                    </div>
+                </article>
+                <% } %>
+        </section>
     </main>
     <script>
 

@@ -15,6 +15,10 @@
     background-color: #c62525;
 }
 
+.alert.info {
+    background-color: #2196F3;
+}
+
 .image__title {
     text-transform: uppercase;
 }
