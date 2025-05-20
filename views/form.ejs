@@ -24,16 +24,10 @@
 
         <input type="submit" value="Añadir">
     </form>
-    <!-- Mostrar un mensaje de confirmación si el usuario acaba de isertar una imagen en la 'base de datos'-->
-    <% if (isImagePosted) { %>
-        <div id="message" class="container alert success">Imagen insertada correctamente</div>
-        <% } %>
-
-            <% if (imageRepeated) { %>
-                <div id="message" class="container alert error">La URL que has intentado insertar está repetida: <%=
-                        imageRepeated %>
-                </div>
-                <% }%>
+    <!-- Mostrar un mensaje de confirmación o error unificado -->
+    <% if (message) { %>
+        <div id="message" class="container alert <%= messageType %>"><%= message %></div>
+    <% } %>
 
 
 </body>

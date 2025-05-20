@@ -77,9 +77,8 @@ app.get('/search', (req, res) => {
 // Cuando nos hagan una petición GET a '/add-image-form' renderizamos 
 app.get('/add-image-form', (req, res) => {
     res.render('form', {
-        isImagePosted: undefined,
-        imageRepeated: undefined
-
+        message: undefined,
+        messageType: undefined
     });
 });
 
@@ -144,27 +143,21 @@ app.post('/add-image-form', async (req, res, next) => {
 
 
     if (isRepeated) {
-
         res.render('form', {
-            isImagePosted: false,
-            imageRepeated: url
+            message: 'La URL de la imagen ya existe.',
+            messageType: 'error'
         });
-
     } else {
-        // otra opción, 'sacar' los campos
         images.push({
             id: id++,
             title,
             url,
             dominantColor
-        })
-
-
-        res.render('form', {
-            isImagePosted: true,
-            imageRepeated: undefined
         });
-
+        res.render('form', {
+            message: 'Imagen añadida correctamente.',
+            messageType: 'success'
+        });
     }
 
 
